@@ -1,0 +1,44 @@
+{
+  "initial_capital": 100000,
+  "max_positions": 15,
+  "scan_interval": 60,
+  "market_hours": {
+    "start": "09:30",
+    "end": "15:55"
+  },
+  "ib_settings": {
+    "host": "127.0.0.1",
+    "port": 7497,
+    "client_id": 1,
+    "timeout": 15
+  },
+  "risk_management": {
+    "max_position_size": 0.05,
+    "max_portfolio_risk": 0.20,
+    "commission": 1.0,
+    "min_signal_strength": 0.7
+  },
+  "ai_settings": {
+    "confidence_threshold": 0.1,
+    "min_indicators": 3,
+    "max_indicators": 8,
+    "analysis_bars": 100,
+    "cache_duration": 300
+  },
+  "symbols": [
+    "AAPL", "MSFT", "GOOGL", "AMZN", "META", "TSLA", "NVDA", "NFLX",
+    "CRM", "ORCL", "ADBE", "INTC", "AMD", "QCOM", "AVGO", "NOW",
+    "ABNB", "UBER", "COIN", "PLTR", "CRWD", "PANW", "ZM", "SNOW"
+  ],
+  "logging": {
+    "level": "INFO",
+    "save_trades": true,
+    "save_positions": true,
+    "ib_orders": true
+  },
+  "performance_targets": {
+    "daily_return_target": 1.0,
+    "max_daily_loss": -1.5,
+    "win_rate_target": 50.0
+  }
+}

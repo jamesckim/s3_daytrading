@@ -1,0 +1,41 @@
+{
+  "initial_capital": 50000,
+  "max_positions": 25,
+  "scan_interval": 30,
+  "market_hours": {
+    "start": "09:30",
+    "end": "15:55"
+  },
+  "risk_management": {
+    "max_position_size": 0.04,
+    "max_portfolio_risk": 0.20,
+    "commission": 1.0,
+    "min_signal_strength": 0.6
+  },
+  "ai_settings": {
+    "confidence_threshold": 0.1,
+    "min_indicators": 3,
+    "max_indicators": 8,
+    "analysis_bars": 300,
+    "cache_duration": 1800
+  },
+  "symbols": [
+    "AAPL", "MSFT", "GOOGL", "AMZN", "META", "TSLA", "NVDA", "NFLX",
+    "CRM", "ORCL", "ADBE", "INTC", "AMD", "QCOM", "AVGO", "NOW",
+    "ABNB", "UBER", "COIN", "PLTR", "CRWD", "PANW", "ZM", "SNOW",
+    "JPM", "BAC", "WFC", "GS", "MS", "C", "V", "MA", "PYPL",
+    "UNH", "JNJ", "PFE", "ABBV", "MRK", "LLY", "TMO", "ABT",
+    "XOM", "CVX", "COP", "SLB", "EOG", "KMI", "OKE", "PSX"
+  ],
+  "logging": {
+    "level": "INFO",
+    "save_trades": true,
+    "save_positions": true,
+    "performance_alerts": true
+  },
+  "performance_targets": {
+    "daily_return_target": 0.5,
+    "max_daily_loss": -2.0,
+    "win_rate_target": 55.0
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "initial_capital": 100000,
+  "max_positions": 25,
+  "scan_interval": 30,
+  "market_hours": {
+    "start": "09:30",
+    "end": "15:55"
+  },
+  "risk_management": {
+    "max_position_size": 0.04,
+    "max_portfolio_risk": 0.20,
+    "commission": 1.0,
+    "min_signal_strength": 0.6
+  },
+  "ai_settings": {
+    "confidence_threshold": 0.1,
+    "min_indicators": 3,
+    "max_indicators": 8,
+    "analysis_bars": 300,
+    "cache_duration": 1800
+  },
+  "symbols": [
+    "A", "AAOI", "ABNB", "ACAD", "ACGL", "ACVA", "ADMA", "ADP",
+    "ADSK", "AEE", "AEHR", "AESI", "AEVA", "AIV", "AJG", "AKAM",
+    "AKR", "AKRO", "ALB", "ALHC", "ALKS", "ALL", "AMBA", "AME",
+    "AMGN", "AMPL", "AMSC", "ANF", "AON", "AOS", "APD", "APGE",
+    "APO", "APTV", "ATO", "AVB", "BG", "BIIB", "BKNG", "BLK",
+    "CAG", "CAT", "CCI", "CHTR", "CLX", "CPT", "DE", "DOV"
+  ],
+  "logging": {
+    "level": "INFO",
+    "save_trades": true,
+    "save_positions": true,
+    "performance_alerts": true
+  },
+  "performance_targets": {
+    "daily_return_target": 2.0,
+    "max_daily_loss": -1.0,
+    "win_rate_target": 45.0
+  }
+}

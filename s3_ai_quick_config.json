@@ -1,0 +1,36 @@
+{
+  "initial_capital": 100000,
+  "max_positions": 3,
+  "scan_interval": 60,
+  "market_hours": {
+    "start": "09:30",
+    "end": "15:55"
+  },
+  "risk_management": {
+    "max_position_size": 0.1,
+    "max_portfolio_risk": 0.20,
+    "commission": 1.0,
+    "min_signal_strength": 0.6
+  },
+  "ai_settings": {
+    "confidence_threshold": 0.1,
+    "min_indicators": 3,
+    "max_indicators": 8,
+    "analysis_bars": 100,
+    "cache_duration": 1800
+  },
+  "symbols": [
+    "AAPL", "MSFT", "GOOGL"
+  ],
+  "logging": {
+    "level": "INFO",
+    "save_trades": true,
+    "save_positions": true,
+    "performance_alerts": true
+  },
+  "performance_targets": {
+    "daily_return_target": 0.5,
+    "max_daily_loss": -2.0,
+    "win_rate_target": 55.0
+  }
+}
