@@ -44,11 +44,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configure logging
+log_dir = "logs"
+os.makedirs(log_dir, exist_ok=True)
+log_file = os.path.join(log_dir, f's3_ai_ib_trading_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log')
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler(f's3_ai_ib_trading_{datetime.now().strftime("%Y%m%d")}.log'),
+        logging.FileHandler(log_file),
         logging.StreamHandler()
     ]
 )

@@ -48,11 +48,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configure logging
+log_dir = "logs"
+os.makedirs(log_dir, exist_ok=True)
+log_file = os.path.join(log_dir, f's3_ai_fmp_ib_hybrid_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log')
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler(f's3_ai_fmp_ib_hybrid_{datetime.now().strftime("%Y%m%d")}.log'),
+        logging.FileHandler(log_file),
         logging.StreamHandler()
     ]
 )
@@ -540,7 +544,7 @@ class S3AIFMPIBHybrid:
         """Save trade history."""
         try:
             trades_df = pd.DataFrame([asdict(t) for t in self.trades])
-            filename = f"s3_fmp_ib_trades_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+            filename = os.path.join(log_dir, f"s3_fmp_ib_trades_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv")
             trades_df.to_csv(filename, index=False)
             logger.info(f"💾 Saved {len(self.trades)} trades to {filename}")
         except Exception as e:

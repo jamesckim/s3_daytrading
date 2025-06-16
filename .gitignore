@@ -23,6 +23,9 @@ data/
 *.csv
 *.json
 !*config*.json
+
+# Logs
+logs/
 *.log
 
 # OS
