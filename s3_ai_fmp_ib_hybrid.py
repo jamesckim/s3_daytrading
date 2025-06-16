@@ -28,6 +28,7 @@ from typing import Dict, Any, List, Optional, Tuple
 import logging
 from dataclasses import dataclass, asdict
 import warnings
+import pytz
 warnings.filterwarnings('ignore')
 
 # Add current directory to path
@@ -108,9 +109,11 @@ class S3AIFMPIBHybrid:
         self.take_profit = risk_config.get("take_profit", 0.03)
         self.min_signal_strength = risk_config.get("min_signal_strength", 0.7)
         
-        # Market hours
-        self.market_open = dt_time(9, 30)
-        self.market_close = dt_time(15, 55)
+        # Market hours (Eastern Time)
+        self.market_open = dt_time(9, 30)  # 9:30 AM ET
+        self.market_close = dt_time(15, 55)  # 3:55 PM ET
+        self.eastern_tz = pytz.timezone('America/New_York')
+        self.local_tz = pytz.timezone('America/Los_Angeles')  # Pacific Time
         
         # State tracking
         self.positions: Dict[str, HybridPosition] = {}
@@ -486,14 +489,17 @@ class S3AIFMPIBHybrid:
         
         try:
             while self.running:
-                now = datetime.now()
-                current_time = now.time()
+                # Get current time in Eastern timezone
+                now_et = datetime.now(self.eastern_tz)
+                current_time_et = now_et.time()
                 
-                # Check market hours
-                if current_time < self.market_open or current_time > self.market_close:
-                    logger.info(f"🌙 Market closed. Current time: {current_time}")
+                # Check market hours (in Eastern Time)
+                if current_time_et < self.market_open or current_time_et > self.market_close:
+                    logger.info(f"🌙 Market closed. ET: {current_time_et.strftime('%I:%M %p')} | PT: {datetime.now().strftime('%I:%M %p')}")
                     time.sleep(300)  # Wait 5 minutes
                     continue
+                
+                logger.info(f"📈 Market open. ET: {current_time_et.strftime('%I:%M %p')} | PT: {datetime.now().strftime('%I:%M %p')}")
                 
                 # Scan market
                 self.scan_market()
