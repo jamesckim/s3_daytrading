@@ -2,22 +2,22 @@
 
 ## Overview
 
-Both systems implement the S3 AI trading strategy but with different data sources and execution backends.
+Three systems implement the S3 AI trading strategy with different combinations of data sources and execution backends.
 
 ## Key Differences
 
-| Feature | FMP Hybrid Trading | IB Paper Trading |
-|---------|-------------------|------------------|
-| **Data Source** | Financial Modeling Prep API | Interactive Brokers TWS |
-| **Execution** | Simulated fills | Real paper trading via IB |
-| **Real-time Data** | HTTP API calls (15s cache) | WebSocket streaming |
-| **Rate Limits** | 3000 requests/minute | No API limits |
-| **Market Access** | US stocks only | Global markets |
-| **Order Types** | Market orders only | Market, Limit, Stop orders |
-| **Position Tracking** | Internal simulation | Real IB positions |
-| **Fees/Commissions** | Simulated ($1/trade) | Real IB fees |
-| **Required Software** | None | TWS/IB Gateway |
-| **Cost** | FMP API subscription | IB account (paper) |
+| Feature | FMP Hybrid Trading | IB Paper Trading | FMP-IB Hybrid |
+|---------|-------------------|------------------|---------------|
+| **Data Source** | Financial Modeling Prep API | Interactive Brokers TWS | Financial Modeling Prep API |
+| **Execution** | Simulated fills | Real paper trading via IB | Real paper trading via IB |
+| **Real-time Data** | HTTP API calls (15s cache) | WebSocket streaming | HTTP API calls (15s cache) |
+| **Rate Limits** | 3000 requests/minute | No API limits | 3000 requests/minute |
+| **Market Access** | US stocks only | Global markets | US stocks only |
+| **Order Types** | Market orders only | Market, Limit, Stop orders | Market, Limit, Stop orders |
+| **Position Tracking** | Internal simulation | Real IB positions | Real IB positions |
+| **Fees/Commissions** | Simulated ($1/trade) | Real IB fees | Real IB fees |
+| **Required Software** | None | TWS/IB Gateway | TWS/IB Gateway |
+| **Cost** | FMP API subscription | IB account (paper) | FMP API + IB account |
 
 ## Architecture Comparison
 
@@ -61,6 +61,26 @@ IB TWS → Real-time Stream → S3 AI Strategy → IB Paper Trading → Real Pos
 - More complex setup
 - Single instance per TWS connection
 
+### FMP-IB Hybrid (`s3_ai_fmp_ib_hybrid.py`)
+```
+FMP API → Quote Data → S3 AI Strategy → IB Paper Trading → Real Positions
+         ↓                                      ↓
+    PostgreSQL ← Historical Analysis      IB Account Status
+```
+
+**Pros:**
+- Best of both worlds: FMP data quality + IB execution
+- Real paper trading with actual fills
+- Consistent data source across all operations
+- Can use FMP's extensive historical data
+- Real position tracking via IB
+
+**Cons:**
+- Requires both FMP API and IB setup
+- Higher cost (two subscriptions)
+- FMP rate limits still apply
+- Complex configuration
+
 ## Use Case Recommendations
 
 ### Use FMP Hybrid Trading When:
@@ -71,11 +91,18 @@ IB TWS → Real-time Stream → S3 AI Strategy → IB Paper Trading → Real Pos
 - Want simple deployment
 
 ### Use IB Paper Trading When:
-- Ready for realistic paper trading
+- Want to use IB's market data
 - Need accurate execution simulation
 - Testing order types and market mechanics
-- Preparing for live trading
-- Need real position management
+- Already comfortable with IB data
+- Want single-source solution
+
+### Use FMP-IB Hybrid When:
+- Prefer FMP's data quality and coverage
+- Need real IB execution mechanics
+- Want consistent data across backtesting and live trading
+- Building production-ready systems
+- Need best execution with preferred data source
 
 ## Configuration Differences
 
@@ -101,6 +128,24 @@ IB TWS → Real-time Stream → S3 AI Strategy → IB Paper Trading → Real Pos
 }
 ```
 
+### FMP-IB Hybrid Configuration (`s3_ai_fmp_ib_config.json`)
+```json
+{
+    "scan_interval": 300,
+    "position_size": 10000,
+    "max_positions": 10,
+    "ib_settings": {
+        "host": "127.0.0.1",
+        "port": 7497,
+        "client_id": 2
+    },
+    "data_settings": {
+        "fmp_cache_duration": 15,
+        "use_fmp_for_historical": true
+    }
+}
+```
+
 ## Performance Considerations
 
 ### FMP Hybrid
@@ -115,10 +160,17 @@ IB TWS → Real-time Stream → S3 AI Strategy → IB Paper Trading → Real Pos
 
 ## Summary
 
-Both systems serve different purposes in the trading development lifecycle:
+All three systems serve different purposes in the trading development lifecycle:
 
 1. **Start with FMP Hybrid** for strategy development and initial testing
-2. **Move to IB Paper Trading** for realistic validation
-3. **Graduate to IB Live Trading** when ready (using same codebase)
+2. **Use FMP-IB Hybrid** when you want FMP data with real IB execution
+3. **Use IB Paper Trading** if you prefer IB's data ecosystem
+4. **Graduate to IB Live Trading** when ready (using same codebase)
 
 The modular S3 AI architecture allows easy switching between data sources and execution backends while maintaining the same core strategy logic.
+
+### Quick Decision Guide:
+- **Development**: FMP Hybrid (simulated)
+- **Testing with preferred data**: FMP-IB Hybrid
+- **Full IB ecosystem**: IB Paper Trading
+- **Production**: Any of the IB-connected systems

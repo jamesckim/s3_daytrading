@@ -1,0 +1,50 @@
+{
+    "initial_capital": 100000,
+    "max_positions": 10,
+    "scan_interval": 300,
+    "symbols": [
+        "AAPL", "MSFT", "GOOGL", "AMZN", "NVDA",
+        "META", "TSLA", "BRK.B", "V", "JPM",
+        "JNJ", "WMT", "PG", "UNH", "HD",
+        "MA", "DIS", "BAC", "ADBE", "CRM",
+        "NFLX", "XOM", "PFE", "TMO", "CSCO",
+        "PEP", "ABBV", "CVX", "MRK", "WFC",
+        "INTC", "AMD", "QCOM", "ORCL"
+    ],
+    "ib_settings": {
+        "host": "127.0.0.1",
+        "port": 7497,
+        "client_id": 2,
+        "account": "DU1234567"
+    },
+    "risk_management": {
+        "position_size": 10000,
+        "max_position_size": 0.05,
+        "stop_loss": 0.02,
+        "take_profit": 0.03,
+        "min_signal_strength": 0.7,
+        "use_trailing_stop": false,
+        "trailing_stop_pct": 0.015
+    },
+    "market_hours": {
+        "open": "09:30",
+        "close": "15:55",
+        "timezone": "America/New_York"
+    },
+    "data_settings": {
+        "fmp_cache_duration": 15,
+        "use_fmp_for_historical": true,
+        "bars_for_analysis": 100
+    },
+    "execution_settings": {
+        "order_type": "MARKET",
+        "use_adaptive_orders": false,
+        "max_order_retries": 3,
+        "fill_timeout": 30
+    },
+    "logging": {
+        "level": "INFO",
+        "save_trades": true,
+        "save_signals": true
+    }
+}
