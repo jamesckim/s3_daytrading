@@ -1,0 +1,6 @@
+version: "Apple Swift version 6.1.2 (swiftlang-6.1.2.1.2 clang-1700.0.13.5)"
+options: "eaf400ae92ec157d5ef9141b293c90b9249314776fddce80bb9fbbe142abd787"
+build_start_time: [1750206830, 251940000]
+build_end_time: [1750206830, 839449000]
+inputs:
+  "/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/Sources/SwiftAVWAP/SwiftAVWAP.swift": [1750206825, 182697308]

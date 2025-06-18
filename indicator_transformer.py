@@ -53,7 +53,11 @@ class IndicatorLibrary:
         indicators = {}
         
         # Trend Indicators
-        for period in [10, 20, 50, 200]:
+        # Optimized EMA periods - removed 1,2,3,7,500 as they add noise
+        ema_periods = [5, 10, 20, 50, 100, 150, 200, 300, 1000]
+        sma_periods = [10, 20, 50, 200]  # Keep SMA periods as original
+        
+        for period in sma_periods:
             indicators[f'SMA_{period}'] = IndicatorConfig(
                 name=f'SMA_{period}',
                 category='trend',
@@ -62,6 +66,8 @@ class IndicatorLibrary:
                 lookback_required=period,
                 normalization='none'
             )
+        
+        for period in ema_periods:
             indicators[f'EMA_{period}'] = IndicatorConfig(
                 name=f'EMA_{period}',
                 category='trend',
@@ -71,43 +77,59 @@ class IndicatorLibrary:
                 normalization='none'
             )
         
-        # Momentum Indicators
-        indicators['RSI_14'] = IndicatorConfig(
-            name='RSI_14',
-            category='momentum',
-            params={'period': 14},
-            compute_function='rsi',
-            lookback_required=28,
-            normalization='none'  # Already 0-100
-        )
+        # Momentum Indicators - Multiple RSI periods for different timeframes
+        rsi_periods = [7, 9, 14, 21, 25]  # Short to long-term momentum
+        for period in rsi_periods:
+            indicators[f'RSI_{period}'] = IndicatorConfig(
+                name=f'RSI_{period}',
+                category='momentum',
+                params={'period': period},
+                compute_function='rsi',
+                lookback_required=period * 2,
+                normalization='none'  # Already 0-100
+            )
         
-        indicators['MACD'] = IndicatorConfig(
-            name='MACD',
-            category='momentum',
-            params={'fast': 12, 'slow': 26, 'signal': 9},
-            compute_function='macd',
-            lookback_required=52,
-            normalization='standard'
-        )
+        # MACD Variations for different market conditions
+        macd_configs = [
+            ('MACD_FAST', {'fast': 5, 'slow': 13, 'signal': 5}),      # Faster signals
+            ('MACD', {'fast': 12, 'slow': 26, 'signal': 9}),          # Standard
+            ('MACD_SLOW', {'fast': 19, 'slow': 39, 'signal': 9}),     # Slower, stronger signals
+            ('MACD_SCALP', {'fast': 3, 'slow': 10, 'signal': 16})     # Ultra-fast for scalping
+        ]
         
-        # Volatility Indicators
-        indicators['ATR_14'] = IndicatorConfig(
-            name='ATR_14',
-            category='volatility',
-            params={'period': 14},
-            compute_function='atr',
-            lookback_required=28,
-            normalization='standard'
-        )
+        for name, params in macd_configs:
+            indicators[name] = IndicatorConfig(
+                name=name,
+                category='momentum',
+                params=params,
+                compute_function='macd',
+                lookback_required=params['slow'] * 2,
+                normalization='standard'
+            )
         
-        indicators['BB_20'] = IndicatorConfig(
-            name='BB_20',
-            category='volatility',
-            params={'period': 20, 'std': 2},
-            compute_function='bollinger_bands',
-            lookback_required=40,
-            normalization='none'
-        )
+        # Volatility Indicators - Multiple ATR periods
+        atr_periods = [7, 10, 14, 20, 30]  # Quick to longer-term volatility
+        for period in atr_periods:
+            indicators[f'ATR_{period}'] = IndicatorConfig(
+                name=f'ATR_{period}',
+                category='volatility',
+                params={'period': period},
+                compute_function='atr',
+                lookback_required=period * 2,
+                normalization='standard'
+            )
+        
+        # Bollinger Bands - Multiple periods for squeeze detection
+        bb_periods = [10, 15, 20, 30, 50]  # Fast to long-term bands
+        for period in bb_periods:
+            indicators[f'BB_{period}'] = IndicatorConfig(
+                name=f'BB_{period}',
+                category='volatility',
+                params={'period': period, 'std': 2},
+                compute_function='bollinger_bands',
+                lookback_required=period * 2,
+                normalization='none'
+            )
         
         # Volume Indicators
         indicators['OBV'] = IndicatorConfig(
@@ -127,6 +149,75 @@ class IndicatorLibrary:
             lookback_required=1,
             normalization='none'
         )
+        
+        # Add VWAP bands for standard VWAP
+        for std_mult in [1, 2, 3]:
+            # Upper band
+            indicators[f'VWAP_U{std_mult}'] = IndicatorConfig(
+                name=f'VWAP_U{std_mult}',
+                category='volume',
+                params={'base': 'VWAP', 'std_mult': std_mult, 'direction': 'upper'},
+                compute_function='vwap_band',
+                lookback_required=20,
+                normalization='none'
+            )
+            
+            # Lower band
+            indicators[f'VWAP_L{std_mult}'] = IndicatorConfig(
+                name=f'VWAP_L{std_mult}',
+                category='volume',
+                params={'base': 'VWAP', 'std_mult': std_mult, 'direction': 'lower'},
+                compute_function='vwap_band',
+                lookback_required=20,
+                normalization='none'
+            )
+        
+        # Anchored VWAP indicators - anchored to different time points
+        anchored_vwap_configs = [
+            ('AVWAP_SESSION', {'anchor': 'session'}),      # From market open
+            ('AVWAP_DAILY', {'anchor': 'daily'}),          # From start of day
+            ('AVWAP_WEEKLY', {'anchor': 'weekly'}),        # From start of week
+            ('AVWAP_MONTHLY', {'anchor': 'monthly'}),      # From start of month
+            # Dynamic anchors based on price/volume
+            ('AVWAP_HIGH', {'anchor': 'high'}),            # From highest price of day
+            ('AVWAP_LOW', {'anchor': 'low'}),              # From lowest price of day
+            ('AVWAP_HVOL', {'anchor': 'high_volume'}),     # From highest volume minute
+            ('AVWAP_PREV_HIGH', {'anchor': 'prev_high'}),  # From previous day's high
+            ('AVWAP_PREV_LOW', {'anchor': 'prev_low'}),    # From previous day's low
+            ('AVWAP_PREV_HVOL', {'anchor': 'prev_hvol'}),  # From previous day's high volume
+        ]
+        
+        for name, params in anchored_vwap_configs:
+            indicators[name] = IndicatorConfig(
+                name=name,
+                category='volume',
+                params=params,
+                compute_function='anchored_vwap',
+                lookback_required=1,
+                normalization='none'
+            )
+            
+            # Add VWAP bands (standard deviations) for each VWAP
+            for std_mult in [1, 2, 3]:
+                # Upper band
+                indicators[f'{name}_U{std_mult}'] = IndicatorConfig(
+                    name=f'{name}_U{std_mult}',
+                    category='volume',
+                    params={'base': name, 'std_mult': std_mult, 'direction': 'upper'},
+                    compute_function='vwap_band',
+                    lookback_required=20,  # Need some data for std calculation
+                    normalization='none'
+                )
+                
+                # Lower band
+                indicators[f'{name}_L{std_mult}'] = IndicatorConfig(
+                    name=f'{name}_L{std_mult}',
+                    category='volume',
+                    params={'base': name, 'std_mult': std_mult, 'direction': 'lower'},
+                    compute_function='vwap_band',
+                    lookback_required=20,
+                    normalization='none'
+                )
         
         # Market Structure
         indicators['SUPPORT_RESISTANCE'] = IndicatorConfig(
@@ -164,6 +255,12 @@ class IndicatorLibrary:
             result = self._compute_obv(data)
         elif config.compute_function == 'vwap':
             result = self._compute_vwap(data)
+        elif config.compute_function == 'anchored_vwap':
+            result = self._compute_anchored_vwap(data, config.params['anchor'])
+        elif config.compute_function == 'vwap_band':
+            result = self._compute_vwap_band(data, config.params['base'], 
+                                           config.params['std_mult'], 
+                                           config.params['direction'])
         elif config.compute_function == 'support_resistance':
             result = self._compute_support_resistance(data, config.params['lookback'])
         else:
@@ -221,6 +318,142 @@ class IndicatorLibrary:
         typical_price = (data['high'] + data['low'] + data['close']) / 3
         vwap = (typical_price * data['volume']).cumsum() / data['volume'].cumsum()
         return vwap
+    
+    def _compute_anchored_vwap(self, data: pd.DataFrame, anchor: str) -> pd.Series:
+        """Compute Anchored VWAP from specific anchor points."""
+        typical_price = (data['high'] + data['low'] + data['close']) / 3
+        
+        # Initialize result series
+        avwap = pd.Series(index=data.index, dtype=float)
+        
+        if anchor == 'session':
+            # Anchor at market open (9:30 AM ET)
+            for date in data.index.date:
+                day_data = data[data.index.date == date]
+                if len(day_data) > 0:
+                    # Find first bar after 9:30 AM ET
+                    day_start = day_data.between_time('09:30', '16:00').index[0] if len(day_data.between_time('09:30', '16:00')) > 0 else day_data.index[0]
+                    day_mask = data.index >= day_start
+                    day_data_from_open = data[day_mask & (data.index.date == date)]
+                    
+                    if len(day_data_from_open) > 0:
+                        cum_vol = day_data_from_open['volume'].cumsum()
+                        cum_pv = (typical_price[day_data_from_open.index] * day_data_from_open['volume']).cumsum()
+                        avwap[day_data_from_open.index] = cum_pv / cum_vol
+                        
+        elif anchor == 'daily':
+            # Anchor at start of each day
+            for date in data.index.date:
+                day_mask = data.index.date == date
+                day_data = data[day_mask]
+                if len(day_data) > 0:
+                    cum_vol = day_data['volume'].cumsum()
+                    cum_pv = (typical_price[day_mask] * day_data['volume']).cumsum()
+                    avwap[day_mask] = cum_pv / cum_vol
+                    
+        elif anchor == 'weekly':
+            # Anchor at start of each week (Monday)
+            data['week'] = data.index.isocalendar().week
+            for week in data['week'].unique():
+                week_mask = data['week'] == week
+                week_data = data[week_mask]
+                if len(week_data) > 0:
+                    cum_vol = week_data['volume'].cumsum()
+                    cum_pv = (typical_price[week_mask] * week_data['volume']).cumsum()
+                    avwap[week_mask] = cum_pv / cum_vol
+                    
+        elif anchor == 'monthly':
+            # Anchor at start of each month
+            for month_start in pd.date_range(data.index[0].replace(day=1), data.index[-1], freq='MS'):
+                month_end = month_start + pd.DateOffset(months=1) - pd.DateOffset(days=1)
+                month_mask = (data.index >= month_start) & (data.index <= month_end)
+                month_data = data[month_mask]
+                if len(month_data) > 0:
+                    cum_vol = month_data['volume'].cumsum()
+                    cum_pv = (typical_price[month_mask] * month_data['volume']).cumsum()
+                    avwap[month_mask] = cum_pv / cum_vol
+                    
+        # Dynamic anchors based on price/volume events
+        elif anchor in ['high', 'low', 'high_volume', 'prev_high', 'prev_low', 'prev_hvol']:
+            # Process each day separately
+            unique_dates = pd.unique(data.index.date)
+            
+            for i, date in enumerate(unique_dates):
+                day_mask = data.index.date == date
+                day_data = data[day_mask]
+                
+                if len(day_data) == 0:
+                    continue
+                
+                # Determine anchor point based on type
+                anchor_idx = None
+                
+                if anchor == 'high':
+                    # Anchor at highest price of current day
+                    anchor_idx = day_data['high'].idxmax()
+                elif anchor == 'low':
+                    # Anchor at lowest price of current day
+                    anchor_idx = day_data['low'].idxmin()
+                elif anchor == 'high_volume':
+                    # Anchor at highest volume minute of current day
+                    anchor_idx = day_data['volume'].idxmax()
+                elif anchor in ['prev_high', 'prev_low', 'prev_hvol'] and i > 0:
+                    # Use previous day's data
+                    prev_date = unique_dates[i-1]
+                    prev_day_mask = data.index.date == prev_date
+                    prev_day_data = data[prev_day_mask]
+                    
+                    if len(prev_day_data) > 0:
+                        if anchor == 'prev_high':
+                            anchor_idx = prev_day_data['high'].idxmax()
+                        elif anchor == 'prev_low':
+                            anchor_idx = prev_day_data['low'].idxmin()
+                        elif anchor == 'prev_hvol':
+                            anchor_idx = prev_day_data['volume'].idxmax()
+                
+                # Calculate VWAP from anchor point forward
+                if anchor_idx is not None:
+                    # Get all data from anchor point to end of current day
+                    mask_from_anchor = (data.index >= anchor_idx) & day_mask
+                    data_from_anchor = data[mask_from_anchor]
+                    
+                    if len(data_from_anchor) > 0:
+                        cum_vol = data_from_anchor['volume'].cumsum()
+                        cum_pv = (typical_price[mask_from_anchor] * data_from_anchor['volume']).cumsum()
+                        avwap[mask_from_anchor] = cum_pv / cum_vol
+        
+        return avwap
+    
+    def _compute_vwap_band(self, data: pd.DataFrame, base_vwap: str, 
+                          std_mult: int, direction: str) -> pd.Series:
+        """Compute VWAP bands using standard deviation."""
+        # First compute the base VWAP
+        base_vwap_values = self.compute_indicator(data, base_vwap)
+        
+        # Calculate typical price
+        typical_price = (data['high'] + data['low'] + data['close']) / 3
+        
+        # Calculate squared deviations from VWAP
+        squared_deviations = (typical_price - base_vwap_values) ** 2
+        
+        # Weight by volume for volume-weighted standard deviation
+        weighted_squared_dev = squared_deviations * data['volume']
+        
+        # Calculate rolling sums with a 20-period window
+        window = 20
+        rolling_weighted_sum = weighted_squared_dev.rolling(window=window, min_periods=1).sum()
+        rolling_volume_sum = data['volume'].rolling(window=window, min_periods=1).sum()
+        
+        # Calculate volume-weighted standard deviation
+        vwstd = np.sqrt(rolling_weighted_sum / (rolling_volume_sum + 1e-8))
+        
+        # Calculate bands
+        if direction == 'upper':
+            band = base_vwap_values + (std_mult * vwstd)
+        else:  # lower
+            band = base_vwap_values - (std_mult * vwstd)
+        
+        return band
     
     def _compute_support_resistance(self, data: pd.DataFrame, lookback: int) -> pd.Series:
         """Compute distance to nearest support/resistance."""
@@ -768,13 +1001,20 @@ class AIIndicatorSelector:
         """Load model weights and configuration."""
         checkpoint = torch.load(path, map_location=self.device)
         self.model.load_state_dict(checkpoint['model_state_dict'])
-        self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        
+        if 'optimizer_state_dict' in checkpoint:
+            self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        
+        if 'indicator_names' in checkpoint:
+            self.indicator_names = checkpoint['indicator_names']
         
         if 'usage_stats' in checkpoint:
             self.indicator_usage_stats = checkpoint['usage_stats']
+        
         if 'performance_history' in checkpoint:
             self.performance_history = deque(checkpoint['performance_history'], maxlen=1000)
         
+        self.model.eval()  # Set to evaluation mode
         self.logger.info(f"Model loaded from {path}")
 
 

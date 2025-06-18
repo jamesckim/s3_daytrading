@@ -20,9 +20,11 @@ venv.bak/
 
 # Data
 data/
+data_cache/
 *.csv
 *.json
 !*config*.json
+*.parquet
 
 # Logs
 logs/

@@ -1,0 +1,18 @@
+{
+    "description": "Default MLX training configuration",
+    "defaults": {
+        "tickers_file": "../tickers/james_tickers.json",
+        "days": 20,
+        "epochs": 15,
+        "batch_size": 128,
+        "sample_interval": 10,
+        "min_samples": 1000,
+        "parallel_workers": 12
+    },
+    "notes": {
+        "tickers_file": "Use james_tickers.json for quality, all_tickers.json for coverage",
+        "days": "20 days = ~5200 minute bars per ticker",
+        "sample_interval": "15 = sample every 15 minutes (lower = more samples)",
+        "epochs": "15 is good balance (5=quick test, 30=thorough)"
+    }
+}

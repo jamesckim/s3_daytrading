@@ -1,6 +1,7 @@
 cd /Users/jkim/Desktop/code/trading/s3_daytrading
 
-  python s3_ai_fmp_ib_hybrid.py
+# Trade
+python s3_ai_fmp_ib_hybrid_trading.py
 
   1. FMP for all market data - Consistent data source for analysis and
    signals
@@ -10,29 +11,29 @@ cd /Users/jkim/Desktop/code/trading/s3_daytrading
   realism
   4. Production-ready - Can easily switch to live trading
 
-uses s3_ai_fmp_trading_config_top_performers.json
+# Train
+Train your full model with MLX: 
+```
+python train_mlx.py
+mlx_config.json
+```
+MLX_QUICK_REFERENCE.md
 
-  # Monitor performance  
-    python s3_ai_fmp_hybrid_trading.py --demo    # Run demo
-  python s3_ai_fmp_hybrid_trading.py --test    # Run tests  
-  python s3_ai_fmp_hybrid_trading.py --status  # Show status only
-  
+Examples:
+  # Your typical training run
+  python train_mlx.py
 
-  # Generate reports
-  python run_s3_ai_trading.py --report
+  # Quick 5-epoch test
+python train_mlx.py --epochs 5
 
-python s3_ai_fixed.py -- uses synthetic data
+  # Train on all tickers
+  python train_mlx.py --tickers-file ../tickers/all_tickers.json
 
-python s3_ai_simple_real_data.py
-
-[ ] add market cap data
-from launch_items
-  python add_market_cap_table.py
-  python collect_market_cap_data.py
-
-    # Run test suite
-  python quick_s3_test.py
+  # See what settings will be used
+  python train_mlx.py --help
 
 
-  # backfill treasury data
-[ ] write treasury_rates backfill script and add to scheduler.py
+# Backtest
+s3_ai_mlx_backtest.py
+
+ai_parallel_backtest_optimized.py              # Run all 664 tickers

@@ -36,6 +36,15 @@ class S3AIWrapper:
     being selected. The S3 strategy needs at least some indicators to work properly.
     """
     
+    # Optimized VWAP confidence thresholds (adjusted for better balance)
+    VWAP_CONFIDENCE_THRESHOLDS = {
+        'base_vwap': 0.15,    # Base VWAPs (institutional benchmarks)
+        'bands_1σ': 0.20,     # Normal trading range (68% probability)
+        'bands_2σ': 0.18,     # Mean reversion sweet spot (95% probability)
+        'bands_3σ': 0.25,     # Extreme moves (99.7% probability)
+        'general': 0.10       # Standard for non-VWAP indicators
+    }
+    
     def __init__(self, 
                  model_path: Optional[Path] = None,
                  device: str = 'cpu',
@@ -73,14 +82,20 @@ class S3AIWrapper:
         # Define fallback indicators (proven performers for S3 strategy)
         if fallback_indicators is None:
             self.fallback_indicators = [
-                'RSI_14',           # Momentum
+                'RSI_7',            # Fast momentum (7 min)
+                'RSI_14',           # Standard momentum (14 min)
+                'RSI_21',           # Slower momentum (21 min)
                 'SMA_20',           # Trend
-                'EMA_10',           # Short-term trend
-                'ATR_14',           # Volatility
-                'MACD',             # Momentum/trend
-                'BB_20',            # Volatility bands
-                'VWAP',             # Volume-weighted price
-                'OBV'               # Volume momentum
+                'EMA_5',            # Very short-term trend (5 min)
+                'EMA_10',           # Short-term trend (10 min)
+                'EMA_20',           # Short-medium trend (20 min)
+                'EMA_50',           # Medium-term trend (50 min)
+                'ATR_14',           # Standard volatility
+                'ATR_7',            # Fast volatility for tight stops
+                'MACD',             # Standard momentum/trend
+                'MACD_FAST',        # Quick signals
+                'BB_20',            # Standard volatility bands
+                'BB_10',            # Fast bands for scalping
             ]
         else:
             self.fallback_indicators = fallback_indicators
@@ -154,15 +169,29 @@ class S3AIWrapper:
             self.logger.error(f"AI selection attempt failed: {e}")
             return None
     
+    def get_confidence_threshold(self, indicator_name: str) -> float:
+        """Get optimized confidence threshold for specific indicator."""
+        if 'VWAP' not in indicator_name:
+            return self.VWAP_CONFIDENCE_THRESHOLDS['general']
+        
+        if indicator_name.endswith(('_U1', '_L1')):
+            return self.VWAP_CONFIDENCE_THRESHOLDS['bands_1σ']
+        elif indicator_name.endswith(('_U2', '_L2')):
+            return self.VWAP_CONFIDENCE_THRESHOLDS['bands_2σ']
+        elif indicator_name.endswith(('_U3', '_L3')):
+            return self.VWAP_CONFIDENCE_THRESHOLDS['bands_3σ']
+        else:
+            return self.VWAP_CONFIDENCE_THRESHOLDS['base_vwap']
+    
     def _apply_modified_selection_logic(self, 
                                       data: pd.DataFrame, 
                                       top_k: int, 
                                       original_result: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Apply modified selection logic with lower confidence threshold.
+        Apply modified selection logic with optimized confidence thresholds.
         
-        This method recomputes the selection using the lower threshold
-        since we can't directly modify the original selector's internal logic.
+        This method recomputes the selection using optimized thresholds for
+        different indicator types, especially VWAP bands.
         """
         try:
             # Recompute all indicators
@@ -192,16 +221,26 @@ class S3AIWrapper:
             else:
                 top_indices = np.where(selection_probs > 0.05)[0]  # Even lower initial threshold
             
-            # Select indicators with our modified confidence threshold
+            # FIXED: Always select top-k indicators regardless of probability
+            # This fixes the issue where all probabilities are too low
             selected_indicators = {}
-            for idx in top_indices:
-                if selection_probs[idx] > self.confidence_threshold:  # Use our lower threshold
-                    indicator_name = self.ai_selector.indicator_names[idx]
-                    selected_indicators[indicator_name] = {
-                        'weight': float(indicator_weights[idx]),
-                        'selection_prob': float(selection_probs[idx]),
-                        'value': float(indicator_values[idx])
-                    }
+            
+            # Always take at least min_indicators
+            num_to_select = max(len(top_indices), self.min_indicators)
+            
+            # Get top indicators by probability
+            all_probs_indices = np.argsort(selection_probs)[-num_to_select:][::-1]
+            
+            for idx in all_probs_indices:
+                indicator_name = self.ai_selector.indicator_names[idx]
+                # No threshold check - always include top indicators
+                selected_indicators[indicator_name] = {
+                    'weight': float(indicator_weights[idx]),
+                    'selection_prob': float(selection_probs[idx]),
+                    'value': float(indicator_values[idx])
+                }
+            
+            self.logger.debug(f"Selected {len(selected_indicators)} indicators using top-k method")
             
             # Return modified result
             return {

@@ -1,0 +1,18 @@
+{
+  "thresholds": {
+    "base_vwap": 0.08,
+    "bands_1\u03c3": 0.12,
+    "bands_2\u03c3": 0.15,
+    "bands_3\u03c3": 0.2,
+    "general": 0.1
+  },
+  "rationale": {
+    "base_vwap": "Primary S/R levels, institutional benchmarks",
+    "bands_1\u03c3": "Normal trading range (68% probability)",
+    "bands_2\u03c3": "Mean reversion sweet spot (95% probability)",
+    "bands_3\u03c3": "Extreme moves, reversal signals (99.7% probability)",
+    "general": "Standard threshold for non-VWAP indicators"
+  },
+  "timestamp": "2025-06-16T15:41:04.792536",
+  "based_on": "Performance analysis of VWAP indicators"
+}

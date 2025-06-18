@@ -1,0 +1,24 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/libSwiftAVWAP.dylib'
+relocations:
+  - { offset: 0xC21EA, size: 0x8, addend: 0x0, symName: _swift_calculate_avwap, symObjAddr: 0x0, symBinAddr: 0x9C0, symSize: 0x14 }
+  - { offset: 0xC2277, size: 0x8, addend: 0x0, symName: _swift_calculate_avwap, symObjAddr: 0x0, symBinAddr: 0x9C0, symSize: 0x14 }
+  - { offset: 0xC22F5, size: 0x8, addend: 0x0, symName: '_$s10SwiftAVWAP21swift_calculate_avwap6prices7volumes10timestamps5count14session_starts0j1_I06resultySPySdG_AJSPys5Int64VGSiSPySiGSiSpySdGtF', symObjAddr: 0x14, symBinAddr: 0x9D4, symSize: 0x14 }
+  - { offset: 0xC23AB, size: 0x8, addend: 0x0, symName: _swift_calculate_rolling_avwap, symObjAddr: 0x28, symBinAddr: 0x9E8, symSize: 0x4 }
+  - { offset: 0xC23CB, size: 0x8, addend: 0x0, symName: _swift_calculate_rolling_avwap, symObjAddr: 0x28, symBinAddr: 0x9E8, symSize: 0x4 }
+  - { offset: 0xC2406, size: 0x8, addend: 0x0, symName: '_$s10SwiftAVWAP29swift_calculate_rolling_avwap6prices7volumes5count6window6resultySPySdG_AHS2iSpySdGtF', symObjAddr: 0x2C, symBinAddr: 0x9EC, symSize: 0x4 }
+  - { offset: 0xC249B, size: 0x8, addend: 0x0, symName: '_$s10SwiftAVWAP016calculateRollingB033_1737AE957C11992C1223FB08B021F7BCLL6prices7volumes5count6window6resultySPySdG_AIS2iSpySdGtF', symObjAddr: 0x30, symBinAddr: 0x9F0, symSize: 0x1D8 }
+  - { offset: 0xC282D, size: 0x8, addend: 0x0, symName: _swift_calculate_avwap_bands, symObjAddr: 0x208, symBinAddr: 0xBC8, symSize: 0x4 }
+  - { offset: 0xC284D, size: 0x8, addend: 0x0, symName: _swift_calculate_avwap_bands, symObjAddr: 0x208, symBinAddr: 0xBC8, symSize: 0x4 }
+  - { offset: 0xC2899, size: 0x8, addend: 0x0, symName: '_$s10SwiftAVWAP27swift_calculate_avwap_bands6prices0E05count6window14std_multiplier12upper_result06lower_M0ySPySdG_AJS2iSdSpySdGAKtF', symObjAddr: 0x20C, symBinAddr: 0xBCC, symSize: 0x4 }
+  - { offset: 0xC2929, size: 0x8, addend: 0x0, symName: '_$s10SwiftAVWAP19calculateAVWAPBands33_1737AE957C11992C1223FB08B021F7BCLL6prices5avwap5count6window13stdMultiplier11upperResult05lowerS0ySPySdG_AKS2iSdSpySdGALtF', symObjAddr: 0x210, symBinAddr: 0xBD0, symSize: 0x3F4 }
+  - { offset: 0xC302A, size: 0x8, addend: 0x0, symName: _swift_calculate_all_avwap_indicators, symObjAddr: 0x604, symBinAddr: 0xFC4, symSize: 0x18 }
+  - { offset: 0xC305C, size: 0x8, addend: 0x0, symName: '_$s10SwiftAVWAP36swift_calculate_all_avwap_indicators6prices7volumes10timestamps5count14session_starts0l1_K07results07result_K0SiSPySdG_AKSPys5Int64VGSiSPySiGSiSpySpySdGGSitF', symObjAddr: 0x61C, symBinAddr: 0xFDC, symSize: 0x18 }
+  - { offset: 0xC30D3, size: 0x8, addend: 0x0, symName: '_$ss12_ArrayBufferV20_consumeAndCreateNew14bufferIsUnique15minimumCapacity13growForAppendAByxGSb_SiSbtFSd_Tg5', symObjAddr: 0x634, symBinAddr: 0xFF4, symSize: 0xF8 }
+  - { offset: 0xC3238, size: 0x8, addend: 0x0, symName: '_$ss12_ArrayBufferV20_consumeAndCreateNew14bufferIsUnique15minimumCapacity13growForAppendAByxGSb_SiSbtFSi_Tg5', symObjAddr: 0x72C, symBinAddr: 0x10EC, symSize: 0xF8 }
+  - { offset: 0xC333A, size: 0x8, addend: 0x0, symName: '_$ss12_ArrayBufferV20_consumeAndCreateNewAByxGyFSd_Tg5', symObjAddr: 0x824, symBinAddr: 0x11E4, symSize: 0x14 }
+  - { offset: 0xC3367, size: 0x8, addend: 0x0, symName: '_$s10SwiftAVWAP016calculateSessionB033_1737AE957C11992C1223FB08B021F7BCLL6prices7volumes10timestamps5count13sessionStarts0P5Count6resultySPySdG_AKSPys5Int64VGSiSPySiGSiSpySdGtFTf4nndnnnn_n', symObjAddr: 0x838, symBinAddr: 0x11F8, symSize: 0x108 }
+  - { offset: 0xC3619, size: 0x8, addend: 0x0, symName: '_$s10SwiftAVWAP36swift_calculate_all_avwap_indicators6prices7volumes10timestamps5count14session_starts0l1_K07results07result_K0SiSPySdG_AKSPys5Int64VGSiSPySiGSiSpySpySdGGSitFTf4nndnnnnn_n', symObjAddr: 0x940, symBinAddr: 0x1300, symSize: 0x374 }
+  - { offset: 0xC3E79, size: 0x8, addend: 0x0, symName: ___swift_instantiateConcreteTypeFromMangledName, symObjAddr: 0xCB4, symBinAddr: 0x1674, symSize: 0x44 }
+...

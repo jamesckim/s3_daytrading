@@ -1,0 +1,66 @@
+client:
+  name: basic
+  file-system: device-agnostic
+tools: {}
+targets:
+  "PackageStructure": ["<PackageStructure>"]
+  "SwiftAVWAP-arm64-apple-macosx15.0-release.dylib": ["<SwiftAVWAP-arm64-apple-macosx15.0-release.dylib>"]
+  "SwiftAVWAP-arm64-apple-macosx15.0-release.module": ["<SwiftAVWAP-arm64-apple-macosx15.0-release.module>"]
+  "main": ["<SwiftAVWAP-arm64-apple-macosx15.0-release.dylib>","<SwiftAVWAP-arm64-apple-macosx15.0-release.module>"]
+  "test": ["<SwiftAVWAP-arm64-apple-macosx15.0-release.dylib>","<SwiftAVWAP-arm64-apple-macosx15.0-release.module>"]
+default: "main"
+nodes:
+  "/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/Sources/SwiftAVWAP/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+commands:
+  "/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/SwiftAVWAP.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/Sources/SwiftAVWAP/SwiftAVWAP.swift"]
+    outputs: ["/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/SwiftAVWAP.build/sources"]
+    description: "Write auxiliary file /Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/SwiftAVWAP.build/sources"
+
+  "/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/SwiftAVWAP.product/Objects.LinkFileList":
+    tool: write-auxiliary-file
+    inputs: ["<link-file-list>","/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/SwiftAVWAP.build/SwiftAVWAP.swift.o"]
+    outputs: ["/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/SwiftAVWAP.product/Objects.LinkFileList"]
+    description: "Write auxiliary file /Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/SwiftAVWAP.product/Objects.LinkFileList"
+
+  "/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/swift-version--58304C5D6DBC2206.txt":
+    tool: write-auxiliary-file
+    inputs: ["<swift-get-version>","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"]
+    outputs: ["/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/swift-version--58304C5D6DBC2206.txt"]
+    always-out-of-date: "true"
+    description: "Write auxiliary file /Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/swift-version--58304C5D6DBC2206.txt"
+
+  "<SwiftAVWAP-arm64-apple-macosx15.0-release.dylib>":
+    tool: phony
+    inputs: ["/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/libSwiftAVWAP.dylib"]
+    outputs: ["<SwiftAVWAP-arm64-apple-macosx15.0-release.dylib>"]
+
+  "<SwiftAVWAP-arm64-apple-macosx15.0-release.module>":
+    tool: phony
+    inputs: ["/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/SwiftAVWAP.build/SwiftAVWAP.swift.o","/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/Modules/SwiftAVWAP.swiftmodule"]
+    outputs: ["<SwiftAVWAP-arm64-apple-macosx15.0-release.module>"]
+
+  "C.SwiftAVWAP-arm64-apple-macosx15.0-release.dylib":
+    tool: shell
+    inputs: ["/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/SwiftAVWAP.build/SwiftAVWAP.swift.o","/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/SwiftAVWAP.product/Objects.LinkFileList"]
+    outputs: ["/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/libSwiftAVWAP.dylib"]
+    description: "Linking ./.build/arm64-apple-macosx/release/libSwiftAVWAP.dylib"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-L","/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release","-o","/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/libSwiftAVWAP.dylib","-module-name","SwiftAVWAP","-Xlinker","-no_warn_duplicate_libraries","-emit-library","-Xlinker","-install_name","-Xlinker","@rpath/libSwiftAVWAP.dylib","-Xlinker","-dead_strip","-Xlinker","-rpath","-Xlinker","@loader_path","@/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/SwiftAVWAP.product/Objects.LinkFileList","-target","arm64-apple-macosx13.0","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g"]
+
+  "C.SwiftAVWAP-arm64-apple-macosx15.0-release.module":
+    tool: shell
+    inputs: ["/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/Sources/SwiftAVWAP/SwiftAVWAP.swift","/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/swift-version--58304C5D6DBC2206.txt","/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/SwiftAVWAP.build/sources"]
+    outputs: ["/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/SwiftAVWAP.build/SwiftAVWAP.swift.o","/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/Modules/SwiftAVWAP.swiftmodule"]
+    description: "Compiling Swift Module 'SwiftAVWAP' (1 sources)"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-module-name","SwiftAVWAP","-emit-dependencies","-emit-module","-emit-module-path","/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/Modules/SwiftAVWAP.swiftmodule","-output-file-map","/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/SwiftAVWAP.build/output-file-map.json","-parse-as-library","-whole-module-optimization","-num-threads","16","-c","@/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/SwiftAVWAP.build/sources","-I","/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/Modules","-target","arm64-apple-macosx13.0","-O","-j16","-DSWIFT_PACKAGE","-module-cache-path","/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/ModuleCache","-parseable-output","-parse-as-library","-emit-objc-header","-emit-objc-header-path","/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/SwiftAVWAP.build/SwiftAVWAP-Swift.h","-swift-version","5","-O","-whole-module-optimization","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g","-Xcc","-isysroot","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-Xcc","-fPIC","-Xcc","-g","-package-name","swift_avwap"]
+
+  "PackageStructure":
+    tool: package-structure-tool
+    inputs: ["/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/Sources/SwiftAVWAP/","/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/Package.swift","/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/Package.resolved"]
+    outputs: ["<PackageStructure>"]
+    description: "Planning build"
+    allow-missing-inputs: true
+

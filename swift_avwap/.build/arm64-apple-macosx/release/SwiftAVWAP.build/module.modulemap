@@ -1,0 +1,4 @@
+module SwiftAVWAP {
+    header "/Users/jkim/Desktop/code/trading/s3_daytrading/swift_avwap/.build/arm64-apple-macosx/release/SwiftAVWAP.build/SwiftAVWAP-Swift.h"
+    requires objc
+}
